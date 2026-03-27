@@ -1,11 +1,10 @@
 package com.ilsecondodasinistra.aboliamolorasolare.model
-
-import java.time.LocalDate
+import java.util.Calendar
 
 /**
  * Identificatore univoco per ogni evento di cambio ora (data + tipo)
  */
-data class TimeChangeEventId(val date: LocalDate, val type: String)
+data class TimeChangeEventId(val date: Calendar, val type: String)
 
 /**
  * Impostazione di notifica per un evento di cambio ora
@@ -15,4 +14,3 @@ data class NotificationSetting(
     val notifyX: Boolean = false,
     val notifyY: Boolean = false
 )
-

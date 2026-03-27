@@ -33,9 +33,11 @@ fun AppNavGraph(
         composable(Screen.Settings.route) {
             SettingsScreen(
                 viewModel = settingsViewModel,
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    mainViewModel.load() // Aggiorna i dati dopo modifica settings
+                    navController.popBackStack()
+                }
             )
         }
     }
 }
-

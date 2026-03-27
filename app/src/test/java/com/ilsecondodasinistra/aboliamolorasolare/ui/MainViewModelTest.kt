@@ -22,7 +22,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
@@ -53,7 +52,16 @@ class MainViewModelTest {
 
     @Test
     fun `load exposes correct time changes and settings`() = testScope.runTest {
-        viewModel.load(LocalDate.of(2026, 3, 27))
+        val baseDate = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.YEAR, 2026)
+            set(java.util.Calendar.MONTH, 2) // Marzo: 0-based
+            set(java.util.Calendar.DAY_OF_MONTH, 27)
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }
+        viewModel.load(baseDate)
         testDispatcher.scheduler.advanceUntilIdle()
         assertEquals(5, viewModel.x.value)
         assertEquals(10, viewModel.y.value)
@@ -63,8 +71,26 @@ class MainViewModelTest {
 
     @Test
     fun `set and remove notification updates state`() = testScope.runTest {
-        viewModel.load(LocalDate.of(2026, 3, 27))
-        val eventId = TimeChangeEventId(LocalDate.of(2026, 3, 29), "LEGALE")
+        val baseDate = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.YEAR, 2026)
+            set(java.util.Calendar.MONTH, 2) // Marzo: 0-based
+            set(java.util.Calendar.DAY_OF_MONTH, 27)
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }
+        viewModel.load(baseDate)
+        val eventCal = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.YEAR, 2026)
+            set(java.util.Calendar.MONTH, 2) // Marzo: 0-based
+            set(java.util.Calendar.DAY_OF_MONTH, 29)
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }
+        val eventId = TimeChangeEventId(eventCal, "LEGALE")
         val setting = NotificationSetting(eventId, notifyX = true)
         viewModel.setNotification(setting)
         // Simulate coroutine completion

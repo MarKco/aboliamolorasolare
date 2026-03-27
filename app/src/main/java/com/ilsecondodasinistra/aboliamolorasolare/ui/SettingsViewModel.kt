@@ -27,14 +27,14 @@ class SettingsViewModel(
     fun setX(newX: Int) {
         viewModelScope.launch {
             setSettingsUseCase.setX(newX)
-            _x.value = getSettingsUseCase.getX()
+            load() // Forza il refresh dei valori dopo la scrittura
         }
     }
 
     fun setY(newY: Int) {
         viewModelScope.launch {
             setSettingsUseCase.setY(newY)
-            _y.value = getSettingsUseCase.getY()
+            load() // Forza il refresh dei valori dopo la scrittura
         }
     }
 }
