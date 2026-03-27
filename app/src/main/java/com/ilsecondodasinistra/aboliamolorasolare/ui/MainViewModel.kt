@@ -74,15 +74,22 @@ class MainViewModel(
 
                     if (setting.notifyX) {
                         val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + 10000L else calculateTrigger(event.date, -xVal)
-                        scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_X", trigger, 
-                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, xVal), 
-                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, xVal, eventTypeName))
+                        
+                        // Solo se il trigger è nel futuro impostiamo la notifica, altrimenti l'AlarmManager farà scattare la notifica immediatamente
+                        if (trigger > System.currentTimeMillis()) {
+                            scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_X", trigger, 
+                                getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, xVal), 
+                                getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, xVal, eventTypeName))
+                        }
                     }
                     if (setting.notifyY) {
                         val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + 20000L else calculateTrigger(event.date, -yVal)
-                        scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_Y", trigger, 
-                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, yVal), 
-                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, yVal, eventTypeName))
+                        
+                        if (trigger > System.currentTimeMillis()) {
+                            scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_Y", trigger, 
+                                getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, yVal), 
+                                getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, yVal, eventTypeName))
+                        }
                     }
                 }
             }
