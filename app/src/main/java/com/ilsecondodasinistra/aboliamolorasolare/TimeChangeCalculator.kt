@@ -27,7 +27,7 @@ class TimeChangeCalculator {
         }
         
         val baseYear = baseDate.get(Calendar.YEAR)
-        val years = (baseYear - 1)..(baseYear + 5) // Riduciamo il range per performance, bastano pochi anni
+        val years = (baseYear - 3)..(baseYear + 3) // range bilanciato per prendere almeno 5 passati e 5 futuri
         val allEvents = years.flatMap { year ->
             listOf(
                 // Ultima domenica di marzo: ora legale (avanti)
@@ -45,8 +45,8 @@ class TimeChangeCalculator {
             )
         }.sortedBy { it.date.timeInMillis }
 
-        val previous = allEvents.filter { it.date.before(normalizedBaseDate) }.takeLast(4)
-        val next = allEvents.filter { !it.date.before(normalizedBaseDate) }.take(4)
+        val previous = allEvents.filter { it.date.before(normalizedBaseDate) }.takeLast(5)
+        val next = allEvents.filter { !it.date.before(normalizedBaseDate) }.take(5)
         return TimeChangeResult(previous = previous, next = next)
     }
 

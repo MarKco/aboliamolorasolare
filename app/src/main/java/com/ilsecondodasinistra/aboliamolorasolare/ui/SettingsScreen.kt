@@ -3,18 +3,24 @@ package com.ilsecondodasinistra.aboliamolorasolare.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -24,9 +30,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ilsecondodasinistra.aboliamolorasolare.R
 
@@ -38,6 +45,10 @@ fun SettingsScreen(
 ) {
     val x by viewModel.x.collectAsState()
     val y by viewModel.y.collectAsState()
+    val isXEnabled by viewModel.isNotifyXEnabled.collectAsState()
+    val isYEnabled by viewModel.isNotifyYEnabled.collectAsState()
+    val isZEnabled by viewModel.isNotifyZEnabled.collectAsState()
+    
     var expandedX by remember { mutableStateOf(false) }
     var expandedY by remember { mutableStateOf(false) }
     val xOptions = (1..30).toList()
@@ -64,53 +75,93 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(stringResource(R.string.notify_x_days_before_setting))
-            Box {
-                Button(onClick = { expandedX = true }) {
-                    Text(x?.toString() ?: "-")
-                }
-                DropdownMenu(expanded = expandedX, onDismissRequest = { expandedX = false }) {
-                    xOptions.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option.toString()) },
-                            onClick = {
-                                viewModel.setX(option)
-                                expandedX = false
+            
+            // Impostazione Notifica X
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(stringResource(R.string.enable_x_notification), fontWeight = FontWeight.Bold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.notify_x_days_before_setting), style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box {
+                            Button(onClick = { expandedX = true }, enabled = isXEnabled) {
+                                Text(x?.toString() ?: "-")
                             }
-                        )
+                            DropdownMenu(expanded = expandedX, onDismissRequest = { expandedX = false }) {
+                                xOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option.toString()) },
+                                        onClick = {
+                                            viewModel.setX(option)
+                                            expandedX = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
+                Switch(
+                    checked = isXEnabled,
+                    onCheckedChange = { viewModel.setNotifyXEnabled(it) }
+                )
             }
-            Text(stringResource(R.string.notify_y_days_before_setting))
-            Box {
-                Button(onClick = { expandedY = true }) {
-                    Text(y?.toString() ?: "-")
-                }
-                DropdownMenu(expanded = expandedY, onDismissRequest = { expandedY = false }) {
-                    yOptions.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option.toString()) },
-                            onClick = {
-                                viewModel.setY(option)
-                                expandedY = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
+            
+            HorizontalDivider()
 
-@Preview(showBackground = true)
-@Composable
-fun SettingsScreenPreview() {
-    MaterialTheme {
-        Column(Modifier.padding(16.dp)) {
-            Text("Notifica X giorni prima:")
-            Button(onClick = {}) { Text("5") }
-            Text("Notifica Y giorni prima:")
-            Button(onClick = {}) { Text("10") }
+            // Impostazione Notifica Y
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(stringResource(R.string.enable_y_notification), fontWeight = FontWeight.Bold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.notify_y_days_before_setting), style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box {
+                            Button(onClick = { expandedY = true }, enabled = isYEnabled) {
+                                Text(y?.toString() ?: "-")
+                            }
+                            DropdownMenu(expanded = expandedY, onDismissRequest = { expandedY = false }) {
+                                yOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option.toString()) },
+                                        onClick = {
+                                            viewModel.setY(option)
+                                            expandedY = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                Switch(
+                    checked = isYEnabled,
+                    onCheckedChange = { viewModel.setNotifyYEnabled(it) }
+                )
+            }
+
+            HorizontalDivider()
+
+            // Impostazione Notifica Z (Giorno stesso)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.notify_day_of_change_setting), fontWeight = FontWeight.Bold)
+                Switch(
+                    checked = isZEnabled,
+                    onCheckedChange = { viewModel.setNotifyZEnabled(it) }
+                )
+            }
         }
     }
 }

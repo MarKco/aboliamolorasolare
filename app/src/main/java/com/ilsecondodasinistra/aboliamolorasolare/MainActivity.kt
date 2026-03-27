@@ -12,40 +12,38 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
-import com.ilsecondodasinistra.aboliamolorasolare.notification.NotificationScheduler
-import com.ilsecondodasinistra.aboliamolorasolare.repository.SharedPreferencesNotificationRepository
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.ilsecondodasinistra.aboliamolorasolare.notification.DailyWorker
 import com.ilsecondodasinistra.aboliamolorasolare.repository.SharedPreferencesSettingsRepository
 import com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModel
 import com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModel
 import com.ilsecondodasinistra.aboliamolorasolare.ui.theme.AboliamoLoraSolareTheme
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Impostiamo il WorkManager per il ricalcolo quotidiano delle notifiche
+        val workRequest = PeriodicWorkRequestBuilder<DailyWorker>(1, TimeUnit.DAYS).build()
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "DailyNotificationCheck",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+        
         setContent {
             AboliamoLoraSolareTheme {
-                // I repository ora sono persistenti tramite SharedPreferences
                 val settingsRepository = remember { SharedPreferencesSettingsRepository(applicationContext) }
-                val notificationRepository = remember { SharedPreferencesNotificationRepository(applicationContext) }
                 
-                val mainViewModelFactory = remember(settingsRepository, notificationRepository) {
+                val mainViewModelFactory = remember(settingsRepository) {
                     com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
                         application = application,
                         getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
-                        getNotificationSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetNotificationSettingsUseCase(
-                            notificationRepository
-                        ),
-                        setNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase(
-                            notificationRepository
-                        ),
-                        removeNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSettingUseCase(
-                            notificationRepository
-                        ),
-                        getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
-                            settingsRepository
-                        ),
-                        notificationScheduler = NotificationScheduler(this@MainActivity)
+                        getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(settingsRepository)
                     )
                 }
                 
@@ -55,12 +53,9 @@ class MainActivity : ComponentActivity() {
                 
                 val settingsViewModelFactory = remember(settingsRepository) {
                     com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModelFactory(
-                        com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
-                            settingsRepository
-                        ),
-                        com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(
-                            settingsRepository
-                        )
+                        application = application,
+                        getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(settingsRepository),
+                        setSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(settingsRepository)
                     )
                 }
 
