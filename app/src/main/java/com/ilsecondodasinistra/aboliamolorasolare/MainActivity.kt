@@ -24,17 +24,18 @@ class MainActivity : ComponentActivity() {
             AboliamoLoraSolareTheme {
                 val settingsRepository = com.ilsecondodasinistra.aboliamolorasolare.repository.InMemorySettingsRepository()
                 val mainViewModelFactory = com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.GetNotificationSettingsUseCase(
+                    application = application,
+                    getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
+                    getNotificationSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetNotificationSettingsUseCase(
                         com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
                     ),
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase(
+                    setNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase(
                         com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
                     ),
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSettingUseCase(
+                    removeNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSettingUseCase(
                         com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
                     ),
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
+                    getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
                         settingsRepository
                     ),
                     notificationScheduler = NotificationScheduler(this)

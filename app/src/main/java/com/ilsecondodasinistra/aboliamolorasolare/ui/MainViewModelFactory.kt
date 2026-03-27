@@ -1,5 +1,6 @@
 package com.ilsecondodasinistra.aboliamolorasolare.ui
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ilsecondodasinistra.aboliamolorasolare.notification.NotificationScheduler
@@ -10,6 +11,7 @@ import com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSett
 import com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase
 
 class MainViewModelFactory(
+    private val application: Application,
     private val getTimeChangesUseCase: GetTimeChangesUseCase,
     private val getNotificationSettingsUseCase: GetNotificationSettingsUseCase,
     private val setNotificationSettingUseCase: SetNotificationSettingUseCase,
@@ -21,6 +23,7 @@ class MainViewModelFactory(
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(
+                application,
                 getTimeChangesUseCase,
                 getNotificationSettingsUseCase,
                 setNotificationSettingUseCase,
@@ -32,4 +35,3 @@ class MainViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-

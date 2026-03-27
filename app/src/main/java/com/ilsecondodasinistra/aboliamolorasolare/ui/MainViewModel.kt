@@ -1,11 +1,13 @@
 package com.ilsecondodasinistra.aboliamolorasolare.ui
 
-// import java.time.LocalDate
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ilsecondodasinistra.aboliamolorasolare.BuildConfig
+import com.ilsecondodasinistra.aboliamolorasolare.R
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeEvent
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeResult
+import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType
 import com.ilsecondodasinistra.aboliamolorasolare.model.NotificationSetting
 import com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId
 import com.ilsecondodasinistra.aboliamolorasolare.notification.NotificationScheduler
@@ -20,6 +22,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class MainViewModel(
+    application: Application,
     private val getTimeChangesUseCase: GetTimeChangesUseCase,
     private val getNotificationSettingsUseCase: GetNotificationSettingsUseCase,
     private val setNotificationSettingUseCase: SetNotificationSettingUseCase,
@@ -27,7 +30,7 @@ class MainViewModel(
     private val getSettingsUseCase: GetSettingsUseCase,
     private val notificationScheduler: NotificationScheduler? = null,
     private val timeChangeEventsProvider: (() -> List<TimeChangeEvent>)? = null // per testabilità
-) : ViewModel() {
+) : AndroidViewModel(application) {
     private val _timeChanges = MutableStateFlow<TimeChangeResult?>(null)
     val timeChanges: StateFlow<TimeChangeResult?> = _timeChanges
 
@@ -60,6 +63,11 @@ class MainViewModel(
                 val yVal = _y.value ?: 10
                 if (event != null) {
                     val now = System.currentTimeMillis()
+                    val eventTypeName = if (event.type == TimeChangeType.LEGALE) 
+                        getApplication<Application>().getString(R.string.summer_time) 
+                    else 
+                        getApplication<Application>().getString(R.string.winter_time)
+
                     if (setting.notifyX) {
                         val triggerMillis = if (BuildConfig.DEBUG) {
                             now + 10_000L
@@ -71,11 +79,22 @@ class MainViewModel(
                                 -xVal
                             )
                         }
+                        
+                        val title = if (BuildConfig.DEBUG) 
+                            getApplication<Application>().getString(R.string.notification_debug_title, 10)
+                        else 
+                            getApplication<Application>().getString(R.string.notification_title, xVal)
+                            
+                        val message = if (BuildConfig.DEBUG)
+                            getApplication<Application>().getString(R.string.notification_debug_message, 10, eventTypeName)
+                        else
+                            getApplication<Application>().getString(R.string.notification_message, xVal, eventTypeName)
+
                         scheduler.scheduleNotification(
                             eventId = "${setting.eventId.date}_${setting.eventId.type}_X",
                             triggerAtMillis = triggerMillis,
-                            title = if (BuildConfig.DEBUG) "DEBUG: Cambio ora fra 10 secondi" else "Cambio ora in $xVal giorni",
-                            message = if (BuildConfig.DEBUG) "Notifica di test: cambio ora fra 10 secondi (${event.type})" else "Tra $xVal giorni ci sarà il cambio dell'ora (${event.type})"
+                            title = title,
+                            message = message
                         )
                     }
                     if (setting.notifyY) {
@@ -89,11 +108,22 @@ class MainViewModel(
                                 -yVal
                             )
                         }
+                        
+                        val title = if (BuildConfig.DEBUG)
+                            getApplication<Application>().getString(R.string.notification_debug_title, 20)
+                        else
+                            getApplication<Application>().getString(R.string.notification_title, yVal)
+
+                        val message = if (BuildConfig.DEBUG)
+                            getApplication<Application>().getString(R.string.notification_debug_message, 20, eventTypeName)
+                        else
+                            getApplication<Application>().getString(R.string.notification_message, yVal, eventTypeName)
+
                         scheduler.scheduleNotification(
                             eventId = "${setting.eventId.date}_${setting.eventId.type}_Y",
                             triggerAtMillis = triggerMillis,
-                            title = if (BuildConfig.DEBUG) "DEBUG: Cambio ora fra 20 secondi" else "Cambio ora in $yVal giorni",
-                            message = if (BuildConfig.DEBUG) "Notifica di test: cambio ora fra 20 secondi (${event.type})" else "Tra $yVal giorni ci sarà il cambio dell'ora (${event.type})"
+                            title = title,
+                            message = message
                         )
                     }
                 }

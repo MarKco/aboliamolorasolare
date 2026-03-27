@@ -26,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,11 +44,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ilsecondodasinistra.aboliamolorasolare.R
+import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeDirection
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeEvent
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeResult
+import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType
 import com.ilsecondodasinistra.aboliamolorasolare.model.NotificationSetting
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -72,7 +77,7 @@ fun MainScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        "Aboliamo l'ora solare", 
+                        stringResource(R.string.app_name), 
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary
                     ) 
@@ -84,7 +89,7 @@ fun MainScreen(
                 ),
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Impostazioni")
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings_desc))
                     }
                 }
             )
@@ -104,11 +109,12 @@ fun MainScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    val allActivatedMsg = stringResource(R.string.all_notifications_activated_msg)
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             viewModel.activateAllNotifications()
-                            Toast.makeText(context, "Tutte le notifiche attivate!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, allActivatedMsg, Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
@@ -117,13 +123,14 @@ fun MainScreen(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(Icons.Default.Notifications, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                        Text("Attiva tutte")
+                        Text(stringResource(R.string.activate_all_btn))
                     }
+                    val allDeactivatedMsg = stringResource(R.string.all_notifications_deactivated_msg)
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             viewModel.deactivateAllNotifications()
-                            Toast.makeText(context, "Tutte le notifiche disattivate!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, allDeactivatedMsg, Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary,
@@ -131,7 +138,7 @@ fun MainScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Disattiva tutte")
+                        Text(stringResource(R.string.deactivate_all_btn))
                     }
                 }
             }
@@ -153,7 +160,7 @@ fun MainScreen(
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Prossimi cambi dell'ora", 
+                        text = stringResource(R.string.upcoming_changes_title), 
                         style = MaterialTheme.typography.titleLarge, 
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -161,6 +168,8 @@ fun MainScreen(
                 }
                 
                 items(timeChanges!!.next) { event ->
+                    val setMsg = stringResource(R.string.notification_set_msg)
+                    val removeMsg = stringResource(R.string.notification_removed_msg)
                     TimeChangeEventItem(
                         event = event,
                         notificationSetting = notificationSettings.find { it.eventId.date == event.date && it.eventId.type == event.type.name },
@@ -168,11 +177,11 @@ fun MainScreen(
                         y = y,
                         onSetNotification = { setting ->
                             viewModel.setNotification(setting)
-                            Toast.makeText(context, "Notifica impostata!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, setMsg, Toast.LENGTH_SHORT).show()
                         },
                         onRemoveNotification = { id ->
                             viewModel.removeNotification(id)
-                            Toast.makeText(context, "Notifica rimossa!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, removeMsg, Toast.LENGTH_SHORT).show()
                         }
                     )
                 }
@@ -180,7 +189,7 @@ fun MainScreen(
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Ultimi cambi dell'ora", 
+                        text = stringResource(R.string.recent_changes_title), 
                         style = MaterialTheme.typography.titleLarge, 
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -230,12 +239,12 @@ fun TimeChangeEventItem(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                val typeColor = if (event.type == com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE) 
+                val typeColor = if (event.type == TimeChangeType.LEGALE) 
                     MaterialTheme.colorScheme.secondary 
                 else 
                     MaterialTheme.colorScheme.primary
 
-                val onTypeColor = if (event.type == com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE) 
+                val onTypeColor = if (event.type == TimeChangeType.LEGALE) 
                     MaterialTheme.colorScheme.onSecondary 
                 else 
                     MaterialTheme.colorScheme.onPrimary
@@ -246,7 +255,7 @@ fun TimeChangeEventItem(
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = event.type.name,
+                        text = event.type.displayName(),
                         style = MaterialTheme.typography.labelMedium,
                         color = onTypeColor,
                         fontWeight = FontWeight.Bold
@@ -256,14 +265,14 @@ fun TimeChangeEventItem(
             
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Spostare le lancette: ${event.direction}", 
+                text = stringResource(R.string.move_hands_label, event.direction.displayName()), 
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
             if (x != null && y != null) {
                 Spacer(modifier = Modifier.height(16.dp))
-                androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 Row(
@@ -287,7 +296,7 @@ fun TimeChangeEventItem(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                             )
-                        ) { Text("Avvisa a -$x gg") }
+                        ) { Text(stringResource(R.string.notify_days_before_btn, x)) }
                     } else {
                         OutlinedButton(
                             onClick = {
@@ -301,7 +310,7 @@ fun TimeChangeEventItem(
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = MaterialTheme.colorScheme.primary
                             )
-                        ) { Text("Rimuovi -$x gg") }
+                        ) { Text(stringResource(R.string.remove_notification_btn, x)) }
                     }
                     
                     Spacer(Modifier.width(8.dp))
@@ -322,7 +331,7 @@ fun TimeChangeEventItem(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                             )
-                        ) { Text("Avvisa a -$y gg") }
+                        ) { Text(stringResource(R.string.notify_days_before_btn, y)) }
                     } else {
                         OutlinedButton(
                             onClick = {
@@ -336,7 +345,7 @@ fun TimeChangeEventItem(
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = MaterialTheme.colorScheme.primary
                             )
-                        ) { Text("Rimuovi -$y gg") }
+                        ) { Text(stringResource(R.string.remove_notification_btn, y)) }
                     }
                 }
             }
@@ -348,11 +357,7 @@ fun TimeChangeEventItem(
 fun CurrentStateSection(result: TimeChangeResult) {
     val now = Calendar.getInstance()
     val current = (result.previous + result.next).lastOrNull { !it.date.after(now) }
-    val state = when (current?.type) {
-        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE -> "Ora Legale"
-        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.SOLARE -> "Ora Solare"
-        else -> "Sconosciuto"
-    }
+    val state = current?.type?.displayName() ?: stringResource(R.string.unknown)
     
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -367,7 +372,7 @@ fun CurrentStateSection(result: TimeChangeResult) {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                "Stato Attuale", 
+                stringResource(R.string.current_state_label), 
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
             )
@@ -379,6 +384,22 @@ fun CurrentStateSection(result: TimeChangeResult) {
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+    }
+}
+
+@Composable
+fun TimeChangeType.displayName(): String {
+    return when (this) {
+        TimeChangeType.LEGALE -> stringResource(R.string.summer_time)
+        TimeChangeType.SOLARE -> stringResource(R.string.winter_time)
+    }
+}
+
+@Composable
+fun TimeChangeDirection.displayName(): String {
+    return when (this) {
+        TimeChangeDirection.AVANTI -> stringResource(R.string.forward)
+        TimeChangeDirection.INDIETRO -> stringResource(R.string.backward)
     }
 }
 
@@ -394,7 +415,7 @@ fun MainScreenPreview() {
     val dummyResult = TimeChangeResult(
         previous = listOf(),
         next = listOf(
-            TimeChangeEvent(dummyCal, com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE, com.ilsecondodasinistra.aboliamolorasolare.TimeChangeDirection.AVANTI)
+            TimeChangeEvent(dummyCal, TimeChangeType.LEGALE, TimeChangeDirection.AVANTI)
         )
     )
     MaterialTheme {

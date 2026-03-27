@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Aboliamo l\'ora solare</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_desc">Settings</string>
+    <string name="back_desc">Back</string>
+    <string name="all_notifications_activated_msg">All notifications activated!</string>
+    <string name="activate_all_btn">Activate all</string>
+    <string name="all_notifications_deactivated_msg">All notifications deactivated!</string>
+    <string name="deactivate_all_btn">Deactivate all</string>
+    <string name="upcoming_changes_title">Upcoming time changes</string>
+    <string name="notification_set_msg">Notification set!</string>
+    <string name="notification_removed_msg">Notification removed!</string>
+    <string name="recent_changes_title">Recent time changes</string>
+    <string name="move_hands_label">Move hands: %1$s</string>
+    <string name="notify_days_before_btn">Notify %1$d days before</string>
+    <string name="remove_notification_btn">Remove notification %1$d days before</string>
+    <string name="current_state_label">Current Status</string>
+    <string name="summer_time">Daylight Saving Time</string>
+    <string name="winter_time">Standard Time</string>
+    <string name="unknown">Unknown</string>
+    <string name="forward">Forward</string>
+    <string name="backward">Backward</string>
+    <string name="notify_x_days_before_setting">Notify X days before:</string>
+    <string name="notify_y_days_before_setting">Notify Y days before:</string>
+
+    <string name="notification_title">Time change in %1$d days</string>
+    <string name="notification_message">In %1$d days there will be a time change (%2$s)</string>
+    <string name="notification_debug_title">DEBUG: Time change in %1$d seconds</string>
+    <string name="notification_debug_message">Test notification: time change in %1$d seconds (%2$s)</string>
+    <string name="notification_channel_name">Time Changes</string>
+    <string name="notification_channel_desc">Notifications for daylight saving/standard time changes</string>
+    <string name="notification_default_title">Time change</string>
+    <string name="notification_default_message">Remember to move the hands!</string>
 </resources>

@@ -14,8 +14,8 @@ import com.ilsecondodasinistra.aboliamolorasolare.R
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val title = intent.getStringExtra("title") ?: "Cambio ora"
-        val message = intent.getStringExtra("message") ?: "Ricordati di spostare le lancette!"
+        val title = intent.getStringExtra("title") ?: context.getString(R.string.notification_default_title)
+        val message = intent.getStringExtra("message") ?: context.getString(R.string.notification_default_message)
         val eventId = intent.getStringExtra("eventId") ?: "default"
         val channelId = "time_change_channel"
 
@@ -39,8 +39,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun createNotificationChannel(context: Context, channelId: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Cambi ora"
-            val descriptionText = "Notifiche per i cambi dell'ora legale/solare"
+            val name = context.getString(R.string.notification_channel_name)
+            val descriptionText = context.getString(R.string.notification_channel_desc)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
@@ -51,4 +51,3 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 }
-

@@ -25,8 +25,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ilsecondodasinistra.aboliamolorasolare.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,10 +48,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Impostazioni") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Indietro")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_desc))
                     }
                 }
             )
@@ -62,7 +64,7 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text("Notifica X giorni prima:")
+            Text(stringResource(R.string.notify_x_days_before_setting))
             Box {
                 Button(onClick = { expandedX = true }) {
                     Text(x?.toString() ?: "-")
@@ -79,7 +81,7 @@ fun SettingsScreen(
                     }
                 }
             }
-            Text("Notifica Y giorni prima:")
+            Text(stringResource(R.string.notify_y_days_before_setting))
             Box {
                 Button(onClick = { expandedY = true }) {
                     Text(y?.toString() ?: "-")
@@ -112,4 +114,3 @@ fun SettingsScreenPreview() {
         }
     }
 }
-
