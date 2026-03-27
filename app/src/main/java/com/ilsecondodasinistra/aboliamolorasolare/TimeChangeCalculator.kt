@@ -18,27 +18,35 @@ data class TimeChangeResult(
 
 class TimeChangeCalculator {
     fun getTimeChanges(baseDate: Calendar): TimeChangeResult {
+        // Normalizziamo la baseDate per il confronto sicuro
+        val normalizedBaseDate = (baseDate.clone() as Calendar).apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
         val baseYear = baseDate.get(Calendar.YEAR)
-        val years = (baseYear - 10)..(baseYear + 10)
+        val years = (baseYear - 1)..(baseYear + 5) // Riduciamo il range per performance, bastano pochi anni
         val allEvents = years.flatMap { year ->
             listOf(
                 // Ultima domenica di marzo: ora legale (avanti)
                 TimeChangeEvent(
-                    date = lastSundayOfMonth(year, 2), // Marzo: month=2 (Calendar)
+                    date = lastSundayOfMonth(year, Calendar.MARCH),
                     type = TimeChangeType.LEGALE,
                     direction = TimeChangeDirection.AVANTI
                 ),
                 // Ultima domenica di ottobre: ora solare (indietro)
                 TimeChangeEvent(
-                    date = lastSundayOfMonth(year, 9), // Ottobre: month=9 (Calendar)
+                    date = lastSundayOfMonth(year, Calendar.OCTOBER),
                     type = TimeChangeType.SOLARE,
                     direction = TimeChangeDirection.INDIETRO
                 )
             )
         }.sortedBy { it.date.timeInMillis }
 
-        val previous = allEvents.filter { it.date.before(baseDate) }.takeLast(4)
-        val next = allEvents.filter { !it.date.before(baseDate) }.take(4)
+        val previous = allEvents.filter { it.date.before(normalizedBaseDate) }.takeLast(4)
+        val next = allEvents.filter { !it.date.before(normalizedBaseDate) }.take(4)
         return TimeChangeResult(previous = previous, next = next)
     }
 
@@ -46,6 +54,12 @@ class TimeChangeCalculator {
         val cal = Calendar.getInstance()
         cal.set(Calendar.YEAR, year)
         cal.set(Calendar.MONTH, month)
+        // Reset orario per garantire l'uguaglianza dei Calendar
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
         while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
             cal.add(Calendar.DAY_OF_MONTH, -1)

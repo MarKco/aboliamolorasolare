@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import com.ilsecondodasinistra.aboliamolorasolare.notification.NotificationScheduler
 import com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModel
@@ -22,35 +23,50 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AboliamoLoraSolareTheme {
-                val settingsRepository = com.ilsecondodasinistra.aboliamolorasolare.repository.InMemorySettingsRepository()
-                val mainViewModelFactory = com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
-                    application = application,
-                    getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
-                    getNotificationSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetNotificationSettingsUseCase(
-                        com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
-                    ),
-                    setNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase(
-                        com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
-                    ),
-                    removeNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSettingUseCase(
-                        com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository()
-                    ),
-                    getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
-                        settingsRepository
-                    ),
-                    notificationScheduler = NotificationScheduler(this)
-                )
+                // I repository in memoria devono essere ricordati tra le ricomposizioni, 
+                // altrimenti vengono distrutti e ricreati continuamente.
+                val settingsRepository = remember { com.ilsecondodasinistra.aboliamolorasolare.repository.InMemorySettingsRepository() }
+                
+                // CRITICO: Il repository delle notifiche DEVE essere condiviso tra tutti gli UseCase.
+                // Prima ogni UseCase riceveva una nuova istanza vuota di InMemoryNotificationRepository,
+                // causando il reset istantaneo della UI non appena si tentava di leggere i dati salvati.
+                val notificationRepository = remember { com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository() }
+                
+                val mainViewModelFactory = remember(settingsRepository, notificationRepository) {
+                    com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
+                        application = application,
+                        getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
+                        getNotificationSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetNotificationSettingsUseCase(
+                            notificationRepository
+                        ),
+                        setNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetNotificationSettingUseCase(
+                            notificationRepository
+                        ),
+                        removeNotificationSettingUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.RemoveNotificationSettingUseCase(
+                            notificationRepository
+                        ),
+                        getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
+                            settingsRepository
+                        ),
+                        notificationScheduler = NotificationScheduler(this@MainActivity)
+                    )
+                }
+                
                 val mainViewModel = androidx.lifecycle.viewmodel.compose.viewModel<MainViewModel>(
                     factory = mainViewModelFactory
                 )
-                val settingsViewModelFactory = com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModelFactory(
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
-                        settingsRepository
-                    ),
-                    com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(
-                        settingsRepository
+                
+                val settingsViewModelFactory = remember(settingsRepository) {
+                    com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModelFactory(
+                        com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(
+                            settingsRepository
+                        ),
+                        com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(
+                            settingsRepository
+                        )
                     )
-                )
+                }
+
                 val settingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel<SettingsViewModel>(
                     factory = settingsViewModelFactory
                 )

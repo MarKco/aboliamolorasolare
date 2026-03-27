@@ -29,7 +29,7 @@ class MainViewModel(
     private val removeNotificationSettingUseCase: RemoveNotificationSettingUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val notificationScheduler: NotificationScheduler? = null,
-    private val timeChangeEventsProvider: (() -> List<TimeChangeEvent>)? = null // per testabilità
+    private val timeChangeEventsProvider: (() -> List<TimeChangeEvent>)? = null 
 ) : AndroidViewModel(application) {
     private val _timeChanges = MutableStateFlow<TimeChangeResult?>(null)
     val timeChanges: StateFlow<TimeChangeResult?> = _timeChanges
@@ -53,78 +53,36 @@ class MainViewModel(
     }
 
     fun setNotification(setting: NotificationSetting) {
+        // Aggiornamento ottimistico: emettiamo subito la lista modificata per la UI
+        val newList = _notificationSettings.value.filter { it.eventId != setting.eventId }.toMutableList()
+        newList.add(setting)
+        _notificationSettings.value = newList
+
         viewModelScope.launch {
             setNotificationSettingUseCase.execute(setting)
             _notificationSettings.value = getNotificationSettingsUseCase.execute()
-            // Schedula la notifica reale se richiesto
+            
             notificationScheduler?.let { scheduler ->
                 val event = findEventById(setting.eventId)
                 val xVal = _x.value ?: 5
                 val yVal = _y.value ?: 10
                 if (event != null) {
-                    val now = System.currentTimeMillis()
                     val eventTypeName = if (event.type == TimeChangeType.LEGALE) 
                         getApplication<Application>().getString(R.string.summer_time) 
                     else 
                         getApplication<Application>().getString(R.string.winter_time)
 
                     if (setting.notifyX) {
-                        val triggerMillis = if (BuildConfig.DEBUG) {
-                            now + 10_000L
-                        } else {
-                            calculateTriggerMillis(
-                                event.date.get(Calendar.YEAR),
-                                event.date.get(Calendar.MONTH) + 1,
-                                event.date.get(Calendar.DAY_OF_MONTH),
-                                -xVal
-                            )
-                        }
-                        
-                        val title = if (BuildConfig.DEBUG) 
-                            getApplication<Application>().getString(R.string.notification_debug_title, 10)
-                        else 
-                            getApplication<Application>().getString(R.string.notification_title, xVal)
-                            
-                        val message = if (BuildConfig.DEBUG)
-                            getApplication<Application>().getString(R.string.notification_debug_message, 10, eventTypeName)
-                        else
-                            getApplication<Application>().getString(R.string.notification_message, xVal, eventTypeName)
-
-                        scheduler.scheduleNotification(
-                            eventId = "${setting.eventId.date}_${setting.eventId.type}_X",
-                            triggerAtMillis = triggerMillis,
-                            title = title,
-                            message = message
-                        )
+                        val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + 10000L else calculateTrigger(event.date, -xVal)
+                        scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_X", trigger, 
+                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, xVal), 
+                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, xVal, eventTypeName))
                     }
                     if (setting.notifyY) {
-                        val triggerMillis = if (BuildConfig.DEBUG) {
-                            now + 20_000L
-                        } else {
-                            calculateTriggerMillis(
-                                event.date.get(Calendar.YEAR),
-                                event.date.get(Calendar.MONTH) + 1,
-                                event.date.get(Calendar.DAY_OF_MONTH),
-                                -yVal
-                            )
-                        }
-                        
-                        val title = if (BuildConfig.DEBUG)
-                            getApplication<Application>().getString(R.string.notification_debug_title, 20)
-                        else
-                            getApplication<Application>().getString(R.string.notification_title, yVal)
-
-                        val message = if (BuildConfig.DEBUG)
-                            getApplication<Application>().getString(R.string.notification_debug_message, 20, eventTypeName)
-                        else
-                            getApplication<Application>().getString(R.string.notification_message, yVal, eventTypeName)
-
-                        scheduler.scheduleNotification(
-                            eventId = "${setting.eventId.date}_${setting.eventId.type}_Y",
-                            triggerAtMillis = triggerMillis,
-                            title = title,
-                            message = message
-                        )
+                        val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + 20000L else calculateTrigger(event.date, -yVal)
+                        scheduler.scheduleNotification("${setting.eventId.dateMillis}_${setting.eventId.type}_Y", trigger, 
+                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_title else R.string.notification_title, yVal), 
+                            getApplication<Application>().getString(if (BuildConfig.DEBUG) R.string.notification_debug_message else R.string.notification_message, yVal, eventTypeName))
                     }
                 }
             }
@@ -132,62 +90,36 @@ class MainViewModel(
     }
 
     fun removeNotification(eventId: TimeChangeEventId) {
+        _notificationSettings.value = _notificationSettings.value.filter { it.eventId != eventId }
+
         viewModelScope.launch {
             removeNotificationSettingUseCase.execute(eventId)
             _notificationSettings.value = getNotificationSettingsUseCase.execute()
-            // Cancella entrambe le notifiche X e Y
-            notificationScheduler?.let { scheduler ->
-                scheduler.cancelNotification("${eventId.date}_${eventId.type}_X")
-                scheduler.cancelNotification("${eventId.date}_${eventId.type}_Y")
+            notificationScheduler?.let {
+                it.cancelNotification("${eventId.dateMillis}_${eventId.type}_X")
+                it.cancelNotification("${eventId.dateMillis}_${eventId.type}_Y")
             }
         }
     }
 
-    // Calcola i millis di trigger per la notifica (compatibile minSdk 24)
-    private fun calculateTriggerMillis(year: Int, month: Int, day: Int, daysOffset: Int): Long {
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.YEAR, year)
-        cal.set(Calendar.MONTH, month - 1)
-        cal.set(Calendar.DAY_OF_MONTH, day)
-        cal.set(Calendar.HOUR_OF_DAY, 9)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-        cal.add(Calendar.DAY_OF_MONTH, daysOffset)
-        return cal.timeInMillis
+    private fun calculateTrigger(cal: Calendar, offset: Int): Long {
+        return (cal.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, offset); set(Calendar.HOUR_OF_DAY, 9) }.timeInMillis
     }
 
-    private fun findEventById(eventId: TimeChangeEventId): TimeChangeEvent? {
+    private fun findEventById(id: TimeChangeEventId): TimeChangeEvent? {
         val events = timeChangeEventsProvider?.invoke() ?: _timeChanges.value?.let { it.previous + it.next } ?: emptyList()
-        return events.find {
-            it.date.get(Calendar.YEAR) == eventId.date.get(Calendar.YEAR)
-                    && it.date.get(Calendar.MONTH) == eventId.date.get(Calendar.MONTH)
-                    && it.date.get(Calendar.DAY_OF_MONTH) == eventId.date.get(Calendar.DAY_OF_MONTH)
-                    && it.type.name == eventId.type
-        }
+        return events.find { it.date.timeInMillis == id.dateMillis && it.type.name == id.type }
     }
 
     fun activateAllNotifications() {
-        val events = timeChangeEventsProvider?.invoke() ?: _timeChanges.value?.next ?: emptyList()
-        _x.value ?: 5
-        _y.value ?: 10
-        viewModelScope.launch {
-            events.forEach { event ->
-                setNotification(NotificationSetting(
-                    eventId = TimeChangeEventId(event.date, event.type.name),
-                    notifyX = true,
-                    notifyY = true
-                ))
-            }
+        _timeChanges.value?.next?.forEach { event ->
+            setNotification(NotificationSetting(TimeChangeEventId(event.date.timeInMillis, event.type.name), true, true))
         }
     }
 
     fun deactivateAllNotifications() {
-        val events = timeChangeEventsProvider?.invoke() ?: _timeChanges.value?.next ?: emptyList()
-        viewModelScope.launch {
-            events.forEach { event ->
-                removeNotification(TimeChangeEventId(event.date, event.type.name))
-            }
+        _timeChanges.value?.next?.forEach { event ->
+            removeNotification(TimeChangeEventId(event.date.timeInMillis, event.type.name))
         }
     }
 }
