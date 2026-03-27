@@ -48,6 +48,13 @@ fun TimeChangeEventItem(
             }
             Spacer(Modifier.height(8.dp))
             Text(stringResource(R.string.move_hands_label, event.direction.displayName()), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            
+            val sleepMessage = if (event.direction == TimeChangeDirection.INDIETRO)
+                stringResource(R.string.gain_hour)
+            else
+                stringResource(R.string.lose_hour)
+                
+            Text(sleepMessage, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
         }
     }
 }

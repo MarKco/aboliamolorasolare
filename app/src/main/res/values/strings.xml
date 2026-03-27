@@ -19,6 +19,9 @@
     <string name="forward">Forward</string>
     <string name="backward">Backward</string>
 
+    <string name="gain_hour">You will gain one hour of sleep</string>
+    <string name="lose_hour">You will lose one hour of sleep</string>
+
     <string name="notify_x_days_before_setting">Notify X days before:</string>
     <string name="notify_y_days_before_setting">Notify Y days before:</string>
     <string name="notify_day_of_change_setting">Notify on the morning of the change</string>
@@ -26,11 +29,11 @@
     <string name="enable_y_notification">Enable notification Y</string>
 
     <string name="notification_title">Time change in %1$d days</string>
-    <string name="notification_message">In %1$d days there will be a time change (%2$s)</string>
+    <string name="notification_message">In %1$d days there will be a time change (%2$s). %3$s. Move hands %4$s.</string>
     <string name="notification_title_today">Time change today!</string>
-    <string name="notification_message_today">Today there is a time change (%1$s)</string>
+    <string name="notification_message_today">Today there is a time change (%1$s). %2$s. Move hands %3$s.</string>
     <string name="notification_debug_title">DEBUG: Time change in %1$d seconds</string>
-    <string name="notification_debug_message">Test notification: time change in %1$d seconds (%2$s)</string>
+    <string name="notification_debug_message">Test: time change in %1$d seconds (%2$s). %3$s. Move hands %4$s.</string>
     <string name="notification_channel_name">Time Changes</string>
     <string name="notification_channel_desc">Notifications for daylight saving/standard time changes</string>
     <string name="notification_default_title">Time change</string>

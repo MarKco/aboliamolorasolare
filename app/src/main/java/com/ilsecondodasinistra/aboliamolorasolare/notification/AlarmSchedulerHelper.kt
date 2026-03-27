@@ -3,6 +3,7 @@ package com.ilsecondodasinistra.aboliamolorasolare.notification
 import android.content.Context
 import com.ilsecondodasinistra.aboliamolorasolare.R
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeCalculator
+import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeDirection
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType
 import com.ilsecondodasinistra.aboliamolorasolare.repository.SharedPreferencesSettingsRepository
 import java.util.Calendar
@@ -39,6 +40,16 @@ class AlarmSchedulerHelper(private val context: Context) {
             context.getString(R.string.summer_time) 
         else 
             context.getString(R.string.winter_time)
+
+        val sleepMessage = if (nextEvent.direction == TimeChangeDirection.INDIETRO)
+            context.getString(R.string.gain_hour)
+        else
+            context.getString(R.string.lose_hour)
+
+        val moveHands = if (nextEvent.direction == TimeChangeDirection.AVANTI)
+            context.getString(R.string.forward)
+        else
+            context.getString(R.string.backward)
             
         // Schedulazione Notifica X
         if (isXEnabled) {
@@ -51,9 +62,9 @@ class AlarmSchedulerHelper(private val context: Context) {
                 context.getString(R.string.notification_title, xDays)
             
             val message = if (isFastMode)
-                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
+                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName, sleepMessage, moveHands)
             else
-                context.getString(R.string.notification_message, xDays, eventTypeName)
+                context.getString(R.string.notification_message, xDays, eventTypeName, sleepMessage, moveHands)
 
             if (trigger > System.currentTimeMillis()) {
                 scheduler.scheduleNotification("NEXT_X", trigger, title, message)
@@ -71,9 +82,9 @@ class AlarmSchedulerHelper(private val context: Context) {
                 context.getString(R.string.notification_title, yDays)
             
             val message = if (isFastMode)
-                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
+                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName, sleepMessage, moveHands)
             else
-                context.getString(R.string.notification_message, yDays, eventTypeName)
+                context.getString(R.string.notification_message, yDays, eventTypeName, sleepMessage, moveHands)
 
             if (trigger > System.currentTimeMillis()) {
                 scheduler.scheduleNotification("NEXT_Y", trigger, title, message)
@@ -91,9 +102,9 @@ class AlarmSchedulerHelper(private val context: Context) {
                 context.getString(R.string.notification_title_today)
             
             val message = if (isFastMode)
-                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
+                context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName, sleepMessage, moveHands)
             else
-                context.getString(R.string.notification_message_today, eventTypeName)
+                context.getString(R.string.notification_message_today, eventTypeName, sleepMessage, moveHands)
 
             if (trigger > System.currentTimeMillis()) {
                 scheduler.scheduleNotification("NEXT_Z", trigger, title, message)
