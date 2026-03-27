@@ -3,23 +3,27 @@ package com.ilsecondodasinistra.aboliamolorasolare.ui
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -27,14 +31,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeEvent
@@ -61,7 +70,18 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Aboliamo l'ora solare") },
+                title = { 
+                    Text(
+                        "Aboliamo l'ora solare", 
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    ) 
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "Impostazioni")
@@ -70,41 +90,48 @@ fun MainScreen(
             )
         },
         bottomBar = {
-            androidx.compose.foundation.layout.Box(
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .shadow(8.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    ElevatedButton(
+                    Button(
+                        modifier = Modifier.weight(1f),
                         onClick = {
                             viewModel.activateAllNotifications()
                             Toast.makeText(context, "Tutte le notifiche attivate!", Toast.LENGTH_SHORT).show()
                         },
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("attiva tutte")
+                        Icon(Icons.Default.Notifications, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                        Text("Attiva tutte")
                     }
-                    ElevatedButton(
+                    Button(
+                        modifier = Modifier.weight(1f),
                         onClick = {
                             viewModel.deactivateAllNotifications()
                             Toast.makeText(context, "Tutte le notifiche disattivate!", Toast.LENGTH_SHORT).show()
                         },
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("disattiva tutte")
+                        Text("Disattiva tutte")
                     }
                 }
             }
@@ -113,17 +140,26 @@ fun MainScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(padding),
-            contentPadding = PaddingValues(bottom = 24.dp, start = 8.dp, end = 8.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             if (timeChanges != null) {
                 item {
                     CurrentStateSection(timeChanges!!)
                 }
+                
                 item {
-                    Text("Prossimi cambi dell'ora", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Prossimi cambi dell'ora", 
+                        style = MaterialTheme.typography.titleLarge, 
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
+                
                 items(timeChanges!!.next) { event ->
                     TimeChangeEventItem(
                         event = event,
@@ -132,17 +168,25 @@ fun MainScreen(
                         y = y,
                         onSetNotification = { setting ->
                             viewModel.setNotification(setting)
-                            Toast.makeText(context, "Notifica attivata!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Notifica impostata!", Toast.LENGTH_SHORT).show()
                         },
                         onRemoveNotification = { id ->
                             viewModel.removeNotification(id)
-                            Toast.makeText(context, "Notifica disattivata!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Notifica rimossa!", Toast.LENGTH_SHORT).show()
                         }
                     )
                 }
+                
                 item {
-                    Text("Ultimi cambi dell'ora", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Ultimi cambi dell'ora", 
+                        style = MaterialTheme.typography.titleLarge, 
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
+                
                 items(timeChanges!!.previous) { event ->
                     TimeChangeEventItem(
                         event = event,
@@ -168,32 +212,82 @@ fun TimeChangeEventItem(
     onRemoveNotification: (com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId) -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(Modifier.padding(12.dp)) {
-            Text("${event.date.formatAsDayMonthYear()} - ${event.type}", style = MaterialTheme.typography.bodyLarge)
-            Text("Spostare le lancette: ${event.direction}", style = MaterialTheme.typography.bodyMedium)
-            if (x != null && y != null) {
-                Row(
+        Column(Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = event.date.formatAsDayMonthYear(), 
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                
+                val typeColor = if (event.type == com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE) 
+                    MaterialTheme.colorScheme.secondary 
+                else 
+                    MaterialTheme.colorScheme.primary
+
+                val onTypeColor = if (event.type == com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE) 
+                    MaterialTheme.colorScheme.onSecondary 
+                else 
+                    MaterialTheme.colorScheme.onPrimary
+                
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.End
+                        .background(typeColor, shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
+                    Text(
+                        text = event.type.name,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = onTypeColor,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Spostare le lancette: ${event.direction}", 
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            if (x != null && y != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Notifica X
                     if (notificationSetting == null || !notificationSetting.notifyX) {
                         FilledTonalButton(
                             onClick = {
                                 onSetNotification(
                                     NotificationSetting(
                                         eventId = com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId(event.date, event.type.name),
-                                        notifyX = true
+                                        notifyX = true,
+                                        notifyY = notificationSetting?.notifyY ?: false
                                     )
                                 )
-                            }
-                        ) { Text("X ($x gg)") }
+                            },
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        ) { Text("Avvisa a -$x gg") }
                     } else {
                         OutlinedButton(
                             onClick = {
@@ -203,21 +297,32 @@ fun TimeChangeEventItem(
                                     onRemoveNotification(com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId(event.date, event.type.name))
                                 }
                             },
-                            border = ButtonDefaults.outlinedButtonBorder.copy(width = 2.dp)
-                        ) { Text("Rimuovi X") }
+                            border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) { Text("Rimuovi -$x gg") }
                     }
+                    
                     Spacer(Modifier.width(8.dp))
+                    
+                    // Notifica Y
                     if (notificationSetting == null || !notificationSetting.notifyY) {
                         FilledTonalButton(
                             onClick = {
                                 onSetNotification(
                                     NotificationSetting(
                                         eventId = com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId(event.date, event.type.name),
-                                        notifyY = true
+                                        notifyY = true,
+                                        notifyX = notificationSetting?.notifyX ?: false
                                     )
                                 )
-                            }
-                        ) { Text("Y ($y gg)") }
+                            },
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        ) { Text("Avvisa a -$y gg") }
                     } else {
                         OutlinedButton(
                             onClick = {
@@ -227,8 +332,11 @@ fun TimeChangeEventItem(
                                     onRemoveNotification(com.ilsecondodasinistra.aboliamolorasolare.model.TimeChangeEventId(event.date, event.type.name))
                                 }
                             },
-                            border = ButtonDefaults.outlinedButtonBorder.copy(width = 2.dp)
-                        ) { Text("Rimuovi Y") }
+                            border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) { Text("Rimuovi -$y gg") }
                     }
                 }
             }
@@ -241,19 +349,35 @@ fun CurrentStateSection(result: TimeChangeResult) {
     val now = Calendar.getInstance()
     val current = (result.previous + result.next).lastOrNull { !it.date.after(now) }
     val state = when (current?.type) {
-        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE -> "Ora legale"
-        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.SOLARE -> "Ora solare"
-        else -> "-"
+        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.LEGALE -> "Ora Legale"
+        com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType.SOLARE -> "Ora Solare"
+        else -> "Sconosciuto"
     }
+    
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text("Stato attuale:", style = MaterialTheme.typography.labelMedium)
-            Text(state, style = MaterialTheme.typography.headlineMedium)
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                "Stato Attuale", 
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                state, 
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }
