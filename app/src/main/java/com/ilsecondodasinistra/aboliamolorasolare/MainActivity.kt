@@ -13,6 +13,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import com.ilsecondodasinistra.aboliamolorasolare.notification.NotificationScheduler
+import com.ilsecondodasinistra.aboliamolorasolare.repository.SharedPreferencesNotificationRepository
+import com.ilsecondodasinistra.aboliamolorasolare.repository.SharedPreferencesSettingsRepository
 import com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModel
 import com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModel
 import com.ilsecondodasinistra.aboliamolorasolare.ui.theme.AboliamoLoraSolareTheme
@@ -23,14 +25,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AboliamoLoraSolareTheme {
-                // I repository in memoria devono essere ricordati tra le ricomposizioni, 
-                // altrimenti vengono distrutti e ricreati continuamente.
-                val settingsRepository = remember { com.ilsecondodasinistra.aboliamolorasolare.repository.InMemorySettingsRepository() }
-                
-                // CRITICO: Il repository delle notifiche DEVE essere condiviso tra tutti gli UseCase.
-                // Prima ogni UseCase riceveva una nuova istanza vuota di InMemoryNotificationRepository,
-                // causando il reset istantaneo della UI non appena si tentava di leggere i dati salvati.
-                val notificationRepository = remember { com.ilsecondodasinistra.aboliamolorasolare.repository.InMemoryNotificationRepository() }
+                // I repository ora sono persistenti tramite SharedPreferences
+                val settingsRepository = remember { SharedPreferencesSettingsRepository(applicationContext) }
+                val notificationRepository = remember { SharedPreferencesNotificationRepository(applicationContext) }
                 
                 val mainViewModelFactory = remember(settingsRepository, notificationRepository) {
                     com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
