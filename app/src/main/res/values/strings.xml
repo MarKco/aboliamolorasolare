@@ -35,4 +35,12 @@
     <string name="notification_channel_desc">Notifications for daylight saving/standard time changes</string>
     <string name="notification_default_title">Time change</string>
     <string name="notification_default_message">Remember to move the hands!</string>
+
+    <string name="dev_settings_title">Dev Settings</string>
+    <string name="fast_notifications_label">Fast notifications (seconds instead of days)</string>
+    <string name="scheduled_notifications_title">Scheduled notifications:</string>
+    <string name="scheduled_notif_x">Notification X: %1$s</string>
+    <string name="scheduled_notif_y">Notification Y: %1$s</string>
+    <string name="scheduled_notif_z">Notification Z: %1$s</string>
+    <string name="not_scheduled">Not scheduled</string>
 </resources>

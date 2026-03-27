@@ -17,4 +17,8 @@ interface SettingsRepository {
 
     suspend fun isNotifyZEnabled(): Boolean
     suspend fun setNotifyZEnabled(enabled: Boolean)
+
+    // Dev settings
+    suspend fun isFastNotificationsEnabled(): Boolean
+    suspend fun setFastNotificationsEnabled(enabled: Boolean)
 }

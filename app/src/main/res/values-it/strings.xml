@@ -35,4 +35,12 @@
     <string name="notification_channel_desc">Notifiche per i cambi dell\'ora legale/solare</string>
     <string name="notification_default_title">Cambio ora</string>
     <string name="notification_default_message">Ricordati di spostare le lancette!</string>
+
+    <string name="dev_settings_title">Dev Settings</string>
+    <string name="fast_notifications_label">Notifiche veloci (secondi invece di giorni)</string>
+    <string name="scheduled_notifications_title">Notifiche programmate:</string>
+    <string name="scheduled_notif_x">Notifica X: %1$s</string>
+    <string name="scheduled_notif_y">Notifica Y: %1$s</string>
+    <string name="scheduled_notif_z">Notifica Z: %1$s</string>
+    <string name="not_scheduled">Non programmata</string>
 </resources>

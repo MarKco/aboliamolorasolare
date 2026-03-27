@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -35,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.ilsecondodasinistra.aboliamolorasolare.BuildConfig
 import com.ilsecondodasinistra.aboliamolorasolare.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +52,11 @@ fun SettingsScreen(
     val isXEnabled by viewModel.isNotifyXEnabled.collectAsState()
     val isYEnabled by viewModel.isNotifyYEnabled.collectAsState()
     val isZEnabled by viewModel.isNotifyZEnabled.collectAsState()
+    val isFastEnabled by viewModel.isFastNotificationsEnabled.collectAsState()
+    
+    val nextX by viewModel.nextScheduledX.collectAsState()
+    val nextY by viewModel.nextScheduledY.collectAsState()
+    val nextZ by viewModel.nextScheduledZ.collectAsState()
     
     var expandedX by remember { mutableStateOf(false) }
     var expandedY by remember { mutableStateOf(false) }
@@ -72,7 +81,8 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             
@@ -161,6 +171,38 @@ fun SettingsScreen(
                     checked = isZEnabled,
                     onCheckedChange = { viewModel.setNotifyZEnabled(it) }
                 )
+            }
+
+            if (BuildConfig.DEBUG) {
+                HorizontalDivider()
+                
+                Text(
+                    stringResource(R.string.dev_settings_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold
+                )
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.fast_notifications_label), modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = isFastEnabled,
+                        onCheckedChange = { viewModel.setFastNotificationsEnabled(it) }
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(stringResource(R.string.scheduled_notifications_title), fontWeight = FontWeight.Bold)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(stringResource(R.string.scheduled_notif_x, nextX ?: stringResource(R.string.not_scheduled)))
+                    Text(stringResource(R.string.scheduled_notif_y, nextY ?: stringResource(R.string.not_scheduled)))
+                    Text(stringResource(R.string.scheduled_notif_z, nextZ ?: stringResource(R.string.not_scheduled)))
+                }
             }
         }
     }

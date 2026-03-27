@@ -38,11 +38,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             AboliamoLoraSolareTheme {
                 val settingsRepository = remember { SharedPreferencesSettingsRepository(applicationContext) }
+                val timeChangeCalculator = remember { TimeChangeCalculator() }
                 
                 val mainViewModelFactory = remember(settingsRepository) {
                     com.ilsecondodasinistra.aboliamolorasolare.ui.MainViewModelFactory(
                         application = application,
-                        getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(TimeChangeCalculator()),
+                        getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(timeChangeCalculator),
                         getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(settingsRepository)
                     )
                 }
@@ -55,7 +56,8 @@ class MainActivity : ComponentActivity() {
                     com.ilsecondodasinistra.aboliamolorasolare.ui.SettingsViewModelFactory(
                         application = application,
                         getSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase(settingsRepository),
-                        setSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(settingsRepository)
+                        setSettingsUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase(settingsRepository),
+                        getTimeChangesUseCase = com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase(timeChangeCalculator)
                     )
                 }
 

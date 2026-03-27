@@ -37,4 +37,9 @@ class SharedPreferencesSettingsRepository(context: Context) : SettingsRepository
     override suspend fun setNotifyZEnabled(enabled: Boolean) {
         prefs.edit { putBoolean("notify_z_enabled", enabled) }
     }
+
+    override suspend fun isFastNotificationsEnabled(): Boolean = prefs.getBoolean("fast_notifications_enabled", false)
+    override suspend fun setFastNotificationsEnabled(enabled: Boolean) {
+        prefs.edit { putBoolean("fast_notifications_enabled", enabled) }
+    }
 }

@@ -1,7 +1,6 @@
 package com.ilsecondodasinistra.aboliamolorasolare.notification
 
 import android.content.Context
-import com.ilsecondodasinistra.aboliamolorasolare.BuildConfig
 import com.ilsecondodasinistra.aboliamolorasolare.R
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeCalculator
 import com.ilsecondodasinistra.aboliamolorasolare.TimeChangeType
@@ -30,6 +29,7 @@ class AlarmSchedulerHelper(private val context: Context) {
         val isXEnabled = settingsRepo.isNotifyXEnabled()
         val isYEnabled = settingsRepo.isNotifyYEnabled()
         val isZEnabled = settingsRepo.isNotifyZEnabled()
+        val isFastMode = settingsRepo.isFastNotificationsEnabled()
         
         // Calcoliamo il *prossimo* cambio dell'ora.
         val calculator = TimeChangeCalculator()
@@ -42,15 +42,15 @@ class AlarmSchedulerHelper(private val context: Context) {
             
         // Schedulazione Notifica X
         if (isXEnabled) {
-            val secondsDelay = 10
-            val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, -xDays)
+            val secondsDelay = 5
+            val trigger = if (isFastMode) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, -xDays)
             
-            val title = if (BuildConfig.DEBUG) 
+            val title = if (isFastMode) 
                 context.getString(R.string.notification_debug_title, secondsDelay)
             else 
                 context.getString(R.string.notification_title, xDays)
             
-            val message = if (BuildConfig.DEBUG)
+            val message = if (isFastMode)
                 context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
             else
                 context.getString(R.string.notification_message, xDays, eventTypeName)
@@ -62,15 +62,15 @@ class AlarmSchedulerHelper(private val context: Context) {
         
         // Schedulazione Notifica Y
         if (isYEnabled) {
-            val secondsDelay = 20
-            val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, -yDays)
+            val secondsDelay = 10
+            val trigger = if (isFastMode) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, -yDays)
             
-            val title = if (BuildConfig.DEBUG) 
+            val title = if (isFastMode) 
                 context.getString(R.string.notification_debug_title, secondsDelay)
             else 
                 context.getString(R.string.notification_title, yDays)
             
-            val message = if (BuildConfig.DEBUG)
+            val message = if (isFastMode)
                 context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
             else
                 context.getString(R.string.notification_message, yDays, eventTypeName)
@@ -82,15 +82,15 @@ class AlarmSchedulerHelper(private val context: Context) {
         
         // Schedulazione Notifica Z (la mattina del cambio dell'ora)
         if (isZEnabled) {
-            val secondsDelay = 30
-            val trigger = if (BuildConfig.DEBUG) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, 0)
+            val secondsDelay = 15
+            val trigger = if (isFastMode) System.currentTimeMillis() + secondsDelay * 1000L else calculateTrigger(nextEvent.date, 0)
             
-            val title = if (BuildConfig.DEBUG) 
+            val title = if (isFastMode) 
                 context.getString(R.string.notification_debug_title, secondsDelay)
             else 
                 context.getString(R.string.notification_title_today)
             
-            val message = if (BuildConfig.DEBUG)
+            val message = if (isFastMode)
                 context.getString(R.string.notification_debug_message, secondsDelay, eventTypeName)
             else
                 context.getString(R.string.notification_message_today, eventTypeName)

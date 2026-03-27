@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ilsecondodasinistra.aboliamolorasolare.usecase.GetSettingsUseCase
+import com.ilsecondodasinistra.aboliamolorasolare.usecase.GetTimeChangesUseCase
 import com.ilsecondodasinistra.aboliamolorasolare.usecase.SetSettingsUseCase
 
 class SettingsViewModelFactory(
     private val application: Application,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val setSettingsUseCase: SetSettingsUseCase
+    private val setSettingsUseCase: SetSettingsUseCase,
+    private val getTimeChangesUseCase: GetTimeChangesUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
@@ -17,7 +19,8 @@ class SettingsViewModelFactory(
             return SettingsViewModel(
                 application,
                 getSettingsUseCase,
-                setSettingsUseCase
+                setSettingsUseCase,
+                getTimeChangesUseCase
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

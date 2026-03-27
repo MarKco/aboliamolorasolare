@@ -9,6 +9,7 @@ class GetSettingsUseCase(private val repo: SettingsRepository) {
     suspend fun isNotifyXEnabled(): Boolean = repo.isNotifyXEnabled()
     suspend fun isNotifyYEnabled(): Boolean = repo.isNotifyYEnabled()
     suspend fun isNotifyZEnabled(): Boolean = repo.isNotifyZEnabled()
+    suspend fun isFastNotificationsEnabled(): Boolean = repo.isFastNotificationsEnabled()
     
     // Per convenienza nel MainViewModel lasciamo questo qui
     suspend fun setGlobalNotificationsEnabled(enabled: Boolean) = repo.setGlobalNotificationsEnabled(enabled)
@@ -21,4 +22,5 @@ class SetSettingsUseCase(private val repo: SettingsRepository) {
     suspend fun setNotifyXEnabled(enabled: Boolean) = repo.setNotifyXEnabled(enabled)
     suspend fun setNotifyYEnabled(enabled: Boolean) = repo.setNotifyYEnabled(enabled)
     suspend fun setNotifyZEnabled(enabled: Boolean) = repo.setNotifyZEnabled(enabled)
+    suspend fun setFastNotificationsEnabled(enabled: Boolean) = repo.setFastNotificationsEnabled(enabled)
 }

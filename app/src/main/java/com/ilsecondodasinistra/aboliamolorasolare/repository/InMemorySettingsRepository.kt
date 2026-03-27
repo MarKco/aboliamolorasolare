@@ -11,6 +11,7 @@ class InMemorySettingsRepository : SettingsRepository {
     private var notifyXEnabled: Boolean = true
     private var notifyYEnabled: Boolean = true
     private var notifyZEnabled: Boolean = true
+    private var fastNotificationsEnabled: Boolean = false
 
     override suspend fun getX(): Int = x
     override suspend fun getY(): Int = y
@@ -28,4 +29,7 @@ class InMemorySettingsRepository : SettingsRepository {
 
     override suspend fun isNotifyZEnabled(): Boolean = notifyZEnabled
     override suspend fun setNotifyZEnabled(enabled: Boolean) { this.notifyZEnabled = enabled }
+
+    override suspend fun isFastNotificationsEnabled(): Boolean = fastNotificationsEnabled
+    override suspend fun setFastNotificationsEnabled(enabled: Boolean) { this.fastNotificationsEnabled = enabled }
 }
