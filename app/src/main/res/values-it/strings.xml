@@ -22,11 +22,11 @@
     <string name="gain_hour">Guadagnerai un\'ora di sonno</string>
     <string name="lose_hour">Perderai un\'ora di sonno</string>
 
-    <string name="notify_x_days_before_setting">Notifica X giorni prima:</string>
-    <string name="notify_y_days_before_setting">Notifica Y giorni prima:</string>
+    <string name="notify_x_days_before_setting">Notifica alcuni giorni prima:</string>
+    <string name="notify_y_days_before_setting">Notifica altri giorni prima:</string>
     <string name="notify_day_of_change_setting">Notifica la mattina del cambio</string>
-    <string name="enable_x_notification">Attiva notifica X</string>
-    <string name="enable_y_notification">Attiva notifica Y</string>
+    <string name="enable_x_notification">Attiva notifica a breve termine</string>
+    <string name="enable_y_notification">Attiva notifica a lungo termine</string>
 
     <string name="notification_title">Cambio ora in %1$d giorni</string>
     <string name="notification_message">Tra %1$d giorni ci sarà il cambio dell\'ora (%2$s). %3$s. Sposta le lancette %4$s.</string>

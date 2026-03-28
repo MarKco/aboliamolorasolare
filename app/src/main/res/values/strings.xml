@@ -22,11 +22,11 @@
     <string name="gain_hour">You will gain one hour of sleep</string>
     <string name="lose_hour">You will lose one hour of sleep</string>
 
-    <string name="notify_x_days_before_setting">Notify X days before:</string>
-    <string name="notify_y_days_before_setting">Notify Y days before:</string>
+    <string name="notify_x_days_before_setting">Notify a few days before:</string>
+    <string name="notify_y_days_before_setting">Notify some more days before:</string>
     <string name="notify_day_of_change_setting">Notify on the morning of the change</string>
-    <string name="enable_x_notification">Enable notification X</string>
-    <string name="enable_y_notification">Enable notification Y</string>
+    <string name="enable_x_notification">Enable short term notification</string>
+    <string name="enable_y_notification">Enable long term notification</string>
 
     <string name="notification_title">Time change in %1$d days</string>
     <string name="notification_message">In %1$d days there will be a time change (%2$s). %3$s. Move hands %4$s.</string>
