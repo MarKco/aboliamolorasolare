@@ -12,6 +12,7 @@
     <string name="upcoming_changes_title">Upcoming time changes</string>
     <string name="recent_changes_title">Recent time changes</string>
     <string name="move_hands_label">Move hands: %1$s</string>
+    <string name="move_hands_past_label">You moved hands: %1$s</string>
     <string name="current_state_label">Current Status</string>
     <string name="summer_time">Daylight Saving Time</string>
     <string name="winter_time">Standard Time</string>
@@ -21,6 +22,8 @@
 
     <string name="gain_hour">You will gain one hour of sleep</string>
     <string name="lose_hour">You will lose one hour of sleep</string>
+    <string name="gained_hour">You gained one hour of sleep</string>
+    <string name="lost_hour">You lost one hour of sleep</string>
 
     <string name="notify_x_days_before_setting">Notify a few days before:</string>
     <string name="notify_y_days_before_setting">Notify some more days before:</string>

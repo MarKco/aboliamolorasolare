@@ -32,6 +32,8 @@ import java.util.Calendar
 fun TimeChangeEventItem(
     event: TimeChangeEvent
 ) {
+    val isPast = event.date.before(Calendar.getInstance())
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -47,12 +49,15 @@ fun TimeChangeEventItem(
                 }
             }
             Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.move_hands_label, event.direction.displayName()), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             
-            val sleepMessage = if (event.direction == TimeChangeDirection.INDIETRO)
-                stringResource(R.string.gain_hour)
-            else
-                stringResource(R.string.lose_hour)
+            val moveHandsLabel = if (isPast) R.string.move_hands_past_label else R.string.move_hands_label
+            Text(stringResource(moveHandsLabel, event.direction.displayName()), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            
+            val sleepMessage = if (event.direction == TimeChangeDirection.INDIETRO) {
+                if (isPast) stringResource(R.string.gained_hour) else stringResource(R.string.gain_hour)
+            } else {
+                if (isPast) stringResource(R.string.lost_hour) else stringResource(R.string.lose_hour)
+            }
                 
             Text(sleepMessage, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
         }

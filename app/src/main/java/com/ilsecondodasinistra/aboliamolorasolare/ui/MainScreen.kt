@@ -101,7 +101,7 @@ fun MainScreen(
                 }
                 
                 item { Text(stringResource(R.string.recent_changes_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
-                items(timeChanges!!.previous, key = { it.date.timeInMillis }) { event ->
+                items(timeChanges!!.previous.sortedByDescending { it.date }, key = { it.date.timeInMillis }) { event ->
                     TimeChangeEventItem(event = event)
                 }
             }

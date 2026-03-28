@@ -12,6 +12,7 @@
     <string name="upcoming_changes_title">Prossimi cambi dell\'ora</string>
     <string name="recent_changes_title">Ultimi cambi dell\'ora</string>
     <string name="move_hands_label">Spostare le lancette: %1$s</string>
+    <string name="move_hands_past_label">Hai spostato le lancette: %1$s</string>
     <string name="current_state_label">Stato Attuale</string>
     <string name="summer_time">Ora Legale</string>
     <string name="winter_time">Ora Solare</string>
@@ -21,6 +22,8 @@
 
     <string name="gain_hour">Guadagnerai un\'ora di sonno</string>
     <string name="lose_hour">Perderai un\'ora di sonno</string>
+    <string name="gained_hour">Hai guadagnato un\'ora di sonno</string>
+    <string name="lost_hour">Hai perso un\'ora di sonno</string>
 
     <string name="notify_x_days_before_setting">Notifica alcuni giorni prima:</string>
     <string name="notify_y_days_before_setting">Notifica altri giorni prima:</string>
