@@ -3,32 +3,50 @@
     <string name="settings_title">Settings</string>
     <string name="settings_desc">Settings</string>
     <string name="back_desc">Back</string>
-    <string name="all_notifications_activated_msg">All notifications activated!</string>
-    <string name="activate_all_btn">Activate all</string>
-    <string name="all_notifications_deactivated_msg">All notifications deactivated!</string>
-    <string name="deactivate_all_btn">Deactivate all</string>
+
+    <string name="all_notifications_activated_msg">Notifications enabled!</string>
+    <string name="activate_all_btn">Enable notifications</string>
+    <string name="all_notifications_deactivated_msg">Notifications disabled!</string>
+    <string name="deactivate_all_btn">Disable notifications</string>
+
     <string name="upcoming_changes_title">Upcoming time changes</string>
-    <string name="notification_set_msg">Notification set!</string>
-    <string name="notification_removed_msg">Notification removed!</string>
     <string name="recent_changes_title">Recent time changes</string>
     <string name="move_hands_label">Move hands: %1$s</string>
-    <string name="notify_days_before_btn">Notify %1$d days before</string>
-    <string name="remove_notification_btn">Remove notification %1$d days before</string>
+    <string name="move_hands_past_label">You moved hands: %1$s</string>
     <string name="current_state_label">Current Status</string>
     <string name="summer_time">Daylight Saving Time</string>
     <string name="winter_time">Standard Time</string>
     <string name="unknown">Unknown</string>
     <string name="forward">Forward</string>
     <string name="backward">Backward</string>
-    <string name="notify_x_days_before_setting">Notify X days before:</string>
-    <string name="notify_y_days_before_setting">Notify Y days before:</string>
+
+    <string name="gain_hour">You will gain one hour of sleep</string>
+    <string name="lose_hour">You will lose one hour of sleep</string>
+    <string name="gained_hour">You gained one hour of sleep</string>
+    <string name="lost_hour">You lost one hour of sleep</string>
+
+    <string name="notify_x_days_before_setting">Notify a few days before:</string>
+    <string name="notify_y_days_before_setting">Notify some more days before:</string>
+    <string name="notify_day_of_change_setting">Notify on the morning of the change</string>
+    <string name="enable_x_notification">Enable short term notification</string>
+    <string name="enable_y_notification">Enable long term notification</string>
 
     <string name="notification_title">Time change in %1$d days</string>
-    <string name="notification_message">In %1$d days there will be a time change (%2$s)</string>
+    <string name="notification_message">In %1$d days there will be a time change (%2$s). %3$s. Move hands %4$s.</string>
+    <string name="notification_title_today">Time change today!</string>
+    <string name="notification_message_today">Today there is a time change (%1$s). %2$s. Move hands %3$s.</string>
     <string name="notification_debug_title">DEBUG: Time change in %1$d seconds</string>
-    <string name="notification_debug_message">Test notification: time change in %1$d seconds (%2$s)</string>
+    <string name="notification_debug_message">Test: time change in %1$d seconds (%2$s). %3$s. Move hands %4$s.</string>
     <string name="notification_channel_name">Time Changes</string>
     <string name="notification_channel_desc">Notifications for daylight saving/standard time changes</string>
     <string name="notification_default_title">Time change</string>
     <string name="notification_default_message">Remember to move the hands!</string>
+
+    <string name="dev_settings_title">Dev Settings</string>
+    <string name="fast_notifications_label">Fast notifications (seconds instead of days)</string>
+    <string name="scheduled_notifications_title">Scheduled notifications:</string>
+    <string name="scheduled_notif_x">Notification X: %1$s</string>
+    <string name="scheduled_notif_y">Notification Y: %1$s</string>
+    <string name="scheduled_notif_z">Notification Z: %1$s</string>
+    <string name="not_scheduled">Not scheduled</string>
 </resources>

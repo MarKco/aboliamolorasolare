@@ -3,32 +3,50 @@
     <string name="settings_title">Impostazioni</string>
     <string name="settings_desc">Impostazioni</string>
     <string name="back_desc">Indietro</string>
-    <string name="all_notifications_activated_msg">Tutte le notifiche attivate!</string>
-    <string name="activate_all_btn">Attiva tutte</string>
-    <string name="all_notifications_deactivated_msg">Tutte le notifiche disattivate!</string>
-    <string name="deactivate_all_btn">Disattiva tutte</string>
+
+    <string name="all_notifications_activated_msg">Notifiche attivate!</string>
+    <string name="activate_all_btn">Attiva notifiche</string>
+    <string name="all_notifications_deactivated_msg">Notifiche disattivate!</string>
+    <string name="deactivate_all_btn">Disattiva notifiche</string>
+
     <string name="upcoming_changes_title">Prossimi cambi dell\'ora</string>
-    <string name="notification_set_msg">Notifica impostata!</string>
-    <string name="notification_removed_msg">Notifica rimossa!</string>
     <string name="recent_changes_title">Ultimi cambi dell\'ora</string>
     <string name="move_hands_label">Spostare le lancette: %1$s</string>
-    <string name="notify_days_before_btn">Avvisami %1$d giorni prima</string>
-    <string name="remove_notification_btn">Rimuovi notifica %1$d giorni prima</string>
+    <string name="move_hands_past_label">Hai spostato le lancette: %1$s</string>
     <string name="current_state_label">Stato Attuale</string>
     <string name="summer_time">Ora Legale</string>
     <string name="winter_time">Ora Solare</string>
     <string name="unknown">Sconosciuto</string>
     <string name="forward">Avanti</string>
     <string name="backward">Indietro</string>
-    <string name="notify_x_days_before_setting">Notifica X giorni prima:</string>
-    <string name="notify_y_days_before_setting">Notifica Y giorni prima:</string>
+
+    <string name="gain_hour">Guadagnerai un\'ora di sonno</string>
+    <string name="lose_hour">Perderai un\'ora di sonno</string>
+    <string name="gained_hour">Hai guadagnato un\'ora di sonno</string>
+    <string name="lost_hour">Hai perso un\'ora di sonno</string>
+
+    <string name="notify_x_days_before_setting">Notifica alcuni giorni prima:</string>
+    <string name="notify_y_days_before_setting">Notifica altri giorni prima:</string>
+    <string name="notify_day_of_change_setting">Notifica la mattina del cambio</string>
+    <string name="enable_x_notification">Attiva notifica a breve termine</string>
+    <string name="enable_y_notification">Attiva notifica a lungo termine</string>
 
     <string name="notification_title">Cambio ora in %1$d giorni</string>
-    <string name="notification_message">Tra %1$d giorni ci sarà il cambio dell\'ora (%2$s)</string>
+    <string name="notification_message">Tra %1$d giorni ci sarà il cambio dell\'ora (%2$s). %3$s. Sposta le lancette %4$s.</string>
+    <string name="notification_title_today">Cambio ora oggi!</string>
+    <string name="notification_message_today">Oggi ci sarà il cambio dell\'ora (%1$s). %2$s. Sposta le lancette %3$s.</string>
     <string name="notification_debug_title">DEBUG: Cambio ora fra %1$d secondi</string>
-    <string name="notification_debug_message">Notifica di test: cambio ora fra %1$d secondi (%2$s)</string>
+    <string name="notification_debug_message">Test: cambio ora fra %1$d secondi (%2$s). %3$s. Sposta le lancette %4$s.</string>
     <string name="notification_channel_name">Cambi ora</string>
     <string name="notification_channel_desc">Notifiche per i cambi dell\'ora legale/solare</string>
     <string name="notification_default_title">Cambio ora</string>
     <string name="notification_default_message">Ricordati di spostare le lancette!</string>
+
+    <string name="dev_settings_title">Dev Settings</string>
+    <string name="fast_notifications_label">Notifiche veloci (secondi invece di giorni)</string>
+    <string name="scheduled_notifications_title">Notifiche programmate:</string>
+    <string name="scheduled_notif_x">Notifica X: %1$s</string>
+    <string name="scheduled_notif_y">Notifica Y: %1$s</string>
+    <string name="scheduled_notif_z">Notifica Z: %1$s</string>
+    <string name="not_scheduled">Non programmata</string>
 </resources>
