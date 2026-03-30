@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Aboliamo l' ora solare"
+rootProject.name = "Lancette"
 include(":app")
  
