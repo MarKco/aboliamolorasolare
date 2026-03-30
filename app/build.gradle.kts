@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ilsecondodasinistra.aboliamolorasolare"
+    namespace = "com.ilsecondodasinistra.lancette"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ilsecondodasinistra.aboliamolorasolare"
+        applicationId = "com.ilsecondodasinistra.lancette"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
