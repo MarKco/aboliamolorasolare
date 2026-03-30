@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ilsecondodasinistra.lancette"
+        applicationId = "com.ilsecondodasinistra.aboliamolorasolare"
         minSdk = 24
         targetSdk = 36
         versionCode = 2
